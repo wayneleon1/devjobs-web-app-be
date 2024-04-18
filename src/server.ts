@@ -26,6 +26,7 @@ async function main() {
 main()
   .then(async () => {
     await prisma.$connect();
+    console.log("Database connected");
   })
   .catch(async (e) => {
     console.error(e);
