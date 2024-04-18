@@ -28,3 +28,12 @@ export const createJob = async (req: Request, res: Response) => {
     res.status(500).json({ error: e });
   }
 };
+
+export const getAlljobs = async (req: Request, res: Response) => {
+  try {
+    const jobs = await prisma.jobs.findMany();
+    res.status(200).json(jobs);
+  } catch (e) {
+    res.status(500).json({ error: e });
+  }
+};

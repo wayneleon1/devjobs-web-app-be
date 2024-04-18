@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "Jobs" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "companyName" TEXT NOT NULL,
     "companySite" TEXT NOT NULL,
     "companyLogo" TEXT NOT NULL,
@@ -8,6 +8,8 @@ CREATE TABLE "Jobs" (
     "jobType" TEXT NOT NULL,
     "jobContent" TEXT NOT NULL,
     "location" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Jobs_pkey" PRIMARY KEY ("id")
 );
