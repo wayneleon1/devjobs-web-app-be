@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import JobRouter from "./routes/job.route";
+import cors from "cors";
 
 export const prisma = new PrismaClient();
 
@@ -8,7 +9,10 @@ const app = express();
 const port = 8080;
 
 async function main() {
+  // Middlewares
   app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
+  app.use(cors());
 
   // Register API routes
   app.use("/api/v1/job", JobRouter);
