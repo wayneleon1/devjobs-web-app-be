@@ -30,11 +30,26 @@ export const createJob = async (req: Request, res: Response) => {
   }
 };
 
-// Gett all jobs
+// Get all jobs
 export const getAlljobs = async (req: Request, res: Response) => {
   try {
     const jobs = await prisma.jobs.findMany();
-    res.status(200).json(jobs);
+    res.status(200).json({ data: jobs });
+  } catch (e) {
+    res.status(500).json({ error: e });
+  }
+};
+
+// Get a single job by ID
+export const getJob = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const job = await prisma.jobs.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
+    res.status(200).json({ data: job });
   } catch (e) {
     res.status(500).json({ error: e });
   }
