@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import JobRouter from "./routes/job.route";
+import router from "./routes";
 import cors from "cors";
 
 export const prisma = new PrismaClient();
@@ -15,7 +15,7 @@ async function main() {
   app.use(cors());
 
   // Register API routes
-  app.use("/api/v1/job", JobRouter);
+  app.use("/api/v1/devjobs", router);
 
   // Catch unregistered routes
   app.all("*", (req: Request, res: Response) => {
