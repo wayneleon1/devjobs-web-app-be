@@ -12,19 +12,21 @@ datasource db {
 
 model Jobs {
   id Int @id @default(autoincrement())
-  companyName String
-  companySite String
-  companyLogo String
-  jobTitle String
-  jobType String
-  jobContent String
+  company String
+  logo String
+  logoBackground String
+  position String
+  contract String
   location String
+  apply String
+  website String
+  description String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
  model User {
   id Int @id @default(autoincrement())
-  username String
+  username String @unique
   password String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt

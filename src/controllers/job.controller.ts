@@ -1,32 +1,37 @@
 import { Request, Response } from "express";
 import { prisma } from "../server";
 
-// Create a new job
 export const createJob = async (req: Request, res: Response) => {
   try {
     const {
-      companyName,
-      companySite,
-      companyLogo,
-      jobTitle,
-      jobType,
-      jobContent,
+      company,
+      logo,
+      logoBackground,
+      contract,
+      apply,
+      position,
       location,
+      website,
+      description,
     } = req.body;
     const newJob = await prisma.jobs.create({
       data: {
-        companyName,
-        companySite,
-        companyLogo,
-        jobTitle,
-        jobType,
-        jobContent,
+        company,
+        logo,
+        logoBackground,
+        contract,
+        apply,
+        position,
+        website,
         location,
+        description,
       },
     });
-    res.status(200).json({ message: "Job created Succefully", newJob });
+
+    res.status(200).json({ message: "Job created successfully", newJob });
   } catch (e) {
-    res.status(500).json({ error: e });
+    console.error("Error creating job:", e);
+    res.status(500).json({ error: "An error occurred while creating the job." });
   }
 };
 
