@@ -46,3 +46,35 @@ export const getAllUsers = async (req: Request, res: Response) => {
     res.status(500).json({ error: e });
   }
 };
+
+// Get a single User by ID
+export const getUser = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const user = await prisma.user.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
+    res.status(200).json({ data: user });
+  } catch (e) {
+    res.status(500).json({ error: e });
+  }
+};
+
+// Delete a User
+export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const deletedUser = await prisma.user.delete({
+      where: {
+        id: Number(id),
+      },
+    });
+    res
+      .status(200)
+      .json({ message: "User has been deleted successfuly", deletedUser });
+  } catch (e) {
+    res.status(500).json({ error: e });
+  }
+};
