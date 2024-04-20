@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { prisma } from "../server";
+import jwt from "jsonwebtoken";
+import { uploadToCloud } from "../helper/cloud";
 
+// Register a new user
 export const createUser = async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
 
-    console.log(req.body);
     // Check if the user already exists by username
     const existingUser = await prisma.user.findFirst({
       where: {
@@ -38,6 +40,9 @@ export const createUser = async (req: Request, res: Response) => {
   }
 };
 
+// Login user
+
+// Get all users
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await prisma.user.findMany();
@@ -57,6 +62,30 @@ export const getUser = async (req: Request, res: Response) => {
       },
     });
     res.status(200).json({ data: user });
+  } catch (e) {
+    res.status(500).json({ error: e });
+  }
+};
+
+// Update a User by ID
+export const updateUser = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { username, password } = req.body;
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        username,
+        password: hashedPassword,
+      },
+    });
+    res.status(200).json({ message: "User updated successfuly", updatedUser });
   } catch (e) {
     res.status(500).json({ error: e });
   }

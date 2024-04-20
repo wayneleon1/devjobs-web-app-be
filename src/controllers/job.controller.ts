@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import { prisma } from "../server";
+import { uploadToCloud } from "../helper/cloud";
 
 export const createJob = async (req: Request, res: Response) => {
   try {
     const {
       company,
-      logo,
       logoBackground,
       contract,
       apply,
@@ -14,10 +14,23 @@ export const createJob = async (req: Request, res: Response) => {
       website,
       description,
     } = req.body;
+
+    // Upload Image
+    let imageUrl: string | undefined = undefined;
+
+    if (req.file) {
+      const result = await uploadToCloud(req.file, res);
+      if ("url" in result) {
+        // If 'url' property exists in result, set imageUrl
+        imageUrl = result.url;
+      } else {
+        throw new Error("Failed to upload image to Cloudinary");
+      }
+    }
     const newJob = await prisma.jobs.create({
       data: {
         company,
-        logo,
+        logo: imageUrl as string,
         logoBackground,
         contract,
         apply,
@@ -31,7 +44,9 @@ export const createJob = async (req: Request, res: Response) => {
     res.status(200).json({ message: "Job created successfully", newJob });
   } catch (e) {
     console.error("Error creating job:", e);
-    res.status(500).json({ error: "An error occurred while creating the job." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while creating the job." });
   }
 };
 
@@ -55,6 +70,55 @@ export const getJob = async (req: Request, res: Response) => {
       },
     });
     res.status(200).json({ data: job });
+  } catch (e) {
+    res.status(500).json({ error: e });
+  }
+};
+
+// Update a jobs by ID
+export const updatejob = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const {
+      company,
+      logoBackground,
+      contract,
+      apply,
+      position,
+      location,
+      website,
+      description,
+    } = req.body;
+
+    // Upload Image
+    let imageUrl: string | undefined = undefined;
+
+    if (req.file) {
+      const result = await uploadToCloud(req.file, res);
+      if ("url" in result) {
+        // If 'url' property exists in result, set imageUrl
+        imageUrl = result.url;
+      } else {
+        throw new Error("Failed to upload image to Cloudinary");
+      }
+    }
+    const updatedJob = await prisma.jobs.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        company,
+        logo: imageUrl as string,
+        logoBackground,
+        contract,
+        apply,
+        position,
+        location,
+        website,
+        description,
+      },
+    });
+    res.status(200).json({ message: "jobs updated successfuly", updatedJob });
   } catch (e) {
     res.status(500).json({ error: e });
   }
