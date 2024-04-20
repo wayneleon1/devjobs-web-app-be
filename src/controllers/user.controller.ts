@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { prisma } from "../server";
 import jwt from "jsonwebtoken";
-import { uploadToCloud } from "../helper/cloud";
 
 // Register a new user
 export const createUser = async (req: Request, res: Response) => {
@@ -41,6 +40,45 @@ export const createUser = async (req: Request, res: Response) => {
 };
 
 // Login user
+export const loginUser = async (req: Request, res: Response) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).send({ message: "All fields are mandatory!" });
+    }
+
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        username: String(username),
+      },
+    });
+
+    if (
+      !existingUser ||
+      !(await bcrypt.compare(password, existingUser.password))
+    ) {
+      return res
+        .status(401)
+        .send({ message: "username or password is not valid" });
+    }
+
+    const token = jwt.sign(
+      {
+        user: {
+          username: existingUser.username,
+          id: existingUser.id,
+        },
+      },
+      process.env.ACCESS_TOKEN_SECRET || ""
+      // { expiresIn: "15m" }
+    );
+    return res
+      .status(200)
+      .json({ message: "User was logged in successfully", token });
+  } catch (error) {
+    return res.status(500).json({ message: (error as Error).message });
+  }
+};
 
 // Get all users
 export const getAllUsers = async (req: Request, res: Response) => {

@@ -7,13 +7,14 @@ import {
   updatejob,
 } from "../controllers/job.controller";
 import fileUpload from "../helper/multer";
+import validateToken from "../middlewares/validateToken";
 
 const router = express.Router();
 
-router.post("/", fileUpload.single("logo"), createJob);
+router.post("/", validateToken, fileUpload.single("logo"), createJob);
 router.get("/", getAlljobs);
-router.get("/:id", getJob);
-router.put("/:id", fileUpload.single("logo"), updatejob);
-router.delete("/:id", deleteJob);
+router.get("/:id", validateToken, getJob);
+router.put("/:id", validateToken, fileUpload.single("logo"), updatejob);
+router.delete("/:id", validateToken, deleteJob);
 
 export default router;
