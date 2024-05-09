@@ -15,7 +15,8 @@ const fileUpload = multer({
       ext !== ".bmp" &&
       ext !== ".tiff" &&
       ext !== ".svg" &&
-      ext !== ".jfif"
+      ext !== ".jfif" &&
+      ext !== ".mp4"
     ) {
       // return cb(new Error("Invalid file type"), false);
       return cb(null, false);
